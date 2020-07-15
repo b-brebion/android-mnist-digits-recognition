@@ -25,8 +25,6 @@ import java.nio.FloatBuffer;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button loadButton;
-
     //1-channel image to Tensor functions ----------------------------------------------------------------
     public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap) {
         return bitmapToFloat32Tensor(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        loadButton = findViewById(R.id.load);
+        Button loadButton = findViewById(R.id.load);
 
         final Module finalModule = module;
         loadButton.setOnClickListener(new View.OnClickListener() {
