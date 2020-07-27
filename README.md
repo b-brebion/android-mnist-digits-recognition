@@ -1,4 +1,4 @@
-# MNISTNumberRecognition
+# AndroidMNISTNumberRecognition
 Android application that recognize MNIST Handwritten Digits. This is using a Convolutional Neural Network model made and trained in PyTorch.  
 
 ## Model
