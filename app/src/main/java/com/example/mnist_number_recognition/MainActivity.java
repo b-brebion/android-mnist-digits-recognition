@@ -1,4 +1,4 @@
-package com.example.pytorch_test;
+package com.example.mnist_number_recognition;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,7 +25,7 @@ import java.nio.FloatBuffer;
 
 public class MainActivity extends AppCompatActivity {
 
-    //1-channel image to Tensor functions ----------------------------------------------------------------
+    // 1-channel image to Tensor functions ----------------------------------------------------------------
     public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap) {
         return bitmapToFloat32Tensor(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             throw new IllegalStateException("Buffer underflow");
         }
     }
-    //----------------------------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         Module module = null;
         try {
-            // loading serialized TorchScript module from packaged into app android asset app/src/model/assets/modelMNIST_ts.pt
+            // Loading serialized TorchScript module from packaged into app android asset app/src/model/assets/modelMNIST_ts.pt
             module = Module.load(assetFilePath(this, "modelMNIST_ts.pt"));
         } catch (IOException e) {
             Log.e("MNIST NumberRecognition", "Error reading assets (module)", e);
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap = null;
 
         try {
-            // creating bitmap from img packaged into app android asset app/src/main/assets/img/img_?.jpg
+            // Creating bitmap from img packaged into app android asset app/src/main/assets/img/img_?.jpg
             int randomInt = (int) (Math.random()*350 + 1);
             bitmap = BitmapFactory.decodeStream(getAssets().open("img/img_"+randomInt+".jpg"));
         } catch (IOException e) {
@@ -93,20 +93,20 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        // showing image on UI
+        // Showing image on UI
         ImageView imageView = findViewById(R.id.imageView);
         imageView.setImageBitmap(bitmap);
 
-        // preparing input tensor
+        // Preparing input tensor
         final Tensor inputTensor = bitmapToFloat32Tensor(bitmap);
 
-        // running the model
+        // Running the model
         final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
 
-        // getting tensor content as java array of floats
+        // Getting tensor content as Java array of floats
         final float[] scores = outputTensor.getDataAsFloatArray();
 
-        // searching for the index with maximum score
+        // Searching for the index with maximum score
         float maxScore = -Float.MAX_VALUE;
         int maxScoreIdx = -1;
         for (int i = 0; i < scores.length; i++) {
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 maxScoreIdx = i;
             }
         }
-        String result = "I see a : "+maxScoreIdx;
+        String result = "Recognised number: " + maxScoreIdx;
         TextView textView = findViewById(R.id.textView);
         textView.setText(result);
     }
