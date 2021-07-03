@@ -1,5 +1,5 @@
 # AndroidMNISTNumberRecognition
-Android application that recognize MNIST Handwritten Digits. This is using a Convolutional Neural Network model made and trained in PyTorch.  
+Android application that recognize MNIST Handwritten Digits. This is using a Convolutional Neural Network (CNN) model I made and trained in PyTorch.  
 
 ## Model
 ```
@@ -15,4 +15,4 @@ CNN(
 :white_check_mark: 99% overall accuracy.
 
 ## Screenshots
-<img src="/images/example_3.jpg" alt="example_3" width="300"/> <img src="/images/example_4.jpg" alt="example_4" width="300"/> <img src="/images/example_9.jpg" alt="example_9" width="300"/>
+<img src="/images/example_4.jpg" alt="example_4" width="300"/> <img src="/images/example_9.jpg" alt="example_9" width="300"/>
