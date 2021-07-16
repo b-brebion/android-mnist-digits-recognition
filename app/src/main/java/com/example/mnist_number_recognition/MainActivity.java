@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -71,12 +70,7 @@ public class MainActivity extends AppCompatActivity {
         Button loadButton = findViewById(R.id.load);
 
         final Module finalModule = module;
-        loadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadNewImage(finalModule);
-            }
-        });
+        loadButton.setOnClickListener(v -> loadNewImage(finalModule));
 
         loadNewImage(finalModule);
     }

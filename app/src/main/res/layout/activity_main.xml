@@ -10,12 +10,12 @@
     <Button
         android:id="@+id/load"
         android:layout_width="280dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="15dp"
+        android:layout_height="52dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/rounded_corner"
         android:backgroundTint="#FFFFFF"
         android:foreground="?android:attr/selectableItemBackground"
-        android:text="Load a new image"
+        android:text="@string/load_new_img"
         android:textColor="#000000"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,11 +31,11 @@
         android:layout_height="98dp"
         android:layout_marginTop="100dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/mnist_nb_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"
