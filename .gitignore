@@ -1,9 +1,17 @@
-*.iml
-.gradle
-/local.properties
-.idea
-.DS_Store
-/build
-/captures
+# Android Studio captures folder
+captures/
+
+# External native build folder
 .externalNativeBuild
 .cxx
+
+# Gradle files
+.gradle/
+build/
+
+# IntelliJ
+*.iml
+.idea/
+
+# Local configuration file
+local.properties
