@@ -1,15 +1,19 @@
 package com.example.mnist_number_recognition;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.pytorch.IValue;
 import org.pytorch.Module;
@@ -73,6 +77,24 @@ public class MainActivity extends AppCompatActivity {
         loadButton.setOnClickListener(v -> loadNewImage(finalModule));
 
         loadNewImage(finalModule);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_menu, menu);
+        MenuItem item = menu.findItem(R.id.AB_switch_item);
+        item.setActionView(R.layout.action_bar_switch);
+
+        final SwitchCompat sw = item.getActionView().findViewById(R.id.AB_switch_view);
+
+        sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                Toast.makeText(MainActivity.this, "Dark_mode ON", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(MainActivity.this, "Dark_mode OFF", Toast.LENGTH_LONG).show();
+            }
+        });
+        return true;
     }
 
     public void loadNewImage(Module module){

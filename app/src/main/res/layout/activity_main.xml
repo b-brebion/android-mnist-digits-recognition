@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="#121212"
     tools:context=".MainActivity">
 
     <Button
         android:id="@+id/load"
-        android:layout_width="280dp"
-        android:layout_height="52dp"
+        android:layout_width="230dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/rounded_corner"
-        android:backgroundTint="#FFFFFF"
+        android:backgroundTint="#eff996"
         android:foreground="?android:attr/selectableItemBackground"
         android:text="@string/load_new_img"
         android:textColor="#000000"
