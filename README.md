@@ -14,13 +14,12 @@ CNN(
 ```
 :white_check_mark: 99% overall accuracy.
 
+## Screenshots (TBU)
+<img src="/images/example_4.jpg" alt="example_4" width="300"/> <img src="/images/example_9.jpg" alt="example_9" width="300"/>
+
 ## Areas of improvement
 - Update `torch` and `torchvision`
 - Update `jcenter()` to `mavenCentral()`
 - Add an app icon
-- Add light/dark mode theme
+- Improve light/dark mode theme
 - Improve `README.md`
-
-## Screenshots (TBU)
-<img src="/images/example_4.jpg" alt="example_4" width="300"/> <img src="/images/example_9.jpg" alt="example_9" width="300"/>
-
