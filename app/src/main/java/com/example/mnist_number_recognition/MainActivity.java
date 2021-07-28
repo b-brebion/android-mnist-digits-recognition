@@ -1,19 +1,23 @@
 package com.example.mnist_number_recognition;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.pytorch.IValue;
 import org.pytorch.Module;
@@ -27,6 +31,7 @@ import java.io.OutputStream;
 import java.nio.FloatBuffer;
 
 public class MainActivity extends AppCompatActivity {
+    private enum DarkModeState {DAY, NIGHT}
 
     // 1-channel image to Tensor functions ----------------------------------------------------------------
     public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap) {
@@ -47,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap, int x, int y, int width, int height) {
         final FloatBuffer floatBuffer = Tensor.allocateFloatBuffer(width * height);
         bitmapToFloatBuffer(bitmap, x, y, width, height, floatBuffer, 0);
-        return Tensor.fromBlob(floatBuffer, new long[] {1, 1, height, width});
+        return Tensor.fromBlob(floatBuffer, new long[]{1, 1, height, width});
     }
 
     private static void checkOutBufferCapacityNoRgb(FloatBuffer outBuffer, int outBufferOffset, int tensorWidth, int tensorHeight) {
@@ -71,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        Button loadButton = findViewById(R.id.load);
+        Button loadButton = findViewById(R.id.loadBtn);
 
         final Module finalModule = module;
         loadButton.setOnClickListener(v -> loadNewImage(finalModule));
@@ -87,23 +92,68 @@ public class MainActivity extends AppCompatActivity {
 
         final SwitchCompat sw = item.getActionView().findViewById(R.id.AB_switch_view);
 
+/*
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        final boolean isDarkModeOn = sharedPreferences.getBoolean("isDarkModeOn", false);
+        // When user reopens the app
+        // after applying dark/light mode
+        if (isDarkModeOn) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+*/
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                Toast.makeText(MainActivity.this, "Dark_mode ON", Toast.LENGTH_LONG).show();
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             } else {
-                Toast.makeText(MainActivity.this, "Dark_mode OFF", Toast.LENGTH_LONG).show();
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                //Toast.makeText(MainActivity.this, "Dark_mode OFF", Toast.LENGTH_LONG).show();
             }
         });
+
         return true;
     }
 
-    public void loadNewImage(Module module){
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        if (nightModeFlags == Configuration.UI_MODE_NIGHT_NO) {
+            applyDayNight(DarkModeState.DAY);
+        } else {
+            applyDayNight(DarkModeState.NIGHT);
+        }
+    }
+
+    private void applyDayNight(DarkModeState state) {
+        View mainActivityView = findViewById(R.id.main_activity);
+        TextView textView = findViewById(R.id.textView);
+        Button loadButton = findViewById(R.id.loadBtn);
+        Resources.Theme theme = this.getTheme();
+        int backgroundColor = getResources().getColor(R.color.backgroundColor, theme);
+        int textColor = getResources().getColor(R.color.textColor, theme);
+
+        if (state == DarkModeState.DAY) {
+            mainActivityView.setBackgroundColor(backgroundColor);
+            textView.setTextColor(textColor);
+            //loadButton.setBackground(textColor);
+        } else {
+            mainActivityView.setBackgroundColor(backgroundColor);
+            textView.setTextColor(textColor);
+            //loadButton.setBackgroundColor(accentColor);
+        }
+    }
+
+    public void loadNewImage(Module module) {
         Bitmap bitmap = null;
 
         try {
             // Creating bitmap from img packaged into app android asset app/src/main/assets/img/img_?.jpg
-            int randomInt = (int) (Math.random()*350 + 1);
-            bitmap = BitmapFactory.decodeStream(getAssets().open("img/img_"+randomInt+".jpg"));
+            int randomInt = (int) (Math.random() * 350 + 1);
+            bitmap = BitmapFactory.decodeStream(getAssets().open("img/img_" + randomInt + ".jpg"));
         } catch (IOException e) {
             Log.e("MNIST NumberRecognition", "Error reading assets (image)", e);
             finish();

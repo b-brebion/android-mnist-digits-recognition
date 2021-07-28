@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MNISTNumberRecognition</string>
+    <string name="mnist_nb_img">MNIST Number Image</string>
+    <string name="load_new_img">Load a new image</string>
+</resources>
