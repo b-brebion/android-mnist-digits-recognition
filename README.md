@@ -21,5 +21,6 @@ CNN(
 - Update `torch` and `torchvision`
 - Update `jcenter()` to `mavenCentral()`
 - Add an app icon
-- Improve light/dark mode theme
+- Improve Light / Dark Mode UI
+- Add comments to the code
 - Improve `README.md`
