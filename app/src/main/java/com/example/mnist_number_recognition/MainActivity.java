@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -92,25 +93,26 @@ public class MainActivity extends AppCompatActivity {
 
         final SwitchCompat sw = item.getActionView().findViewById(R.id.AB_switch_view);
 
-/*
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
         final boolean isDarkModeOn = sharedPreferences.getBoolean("isDarkModeOn", false);
-        // When user reopens the app
-        // after applying dark/light mode
         if (isDarkModeOn) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            sw.setChecked(true);
         } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
-*/
+
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                editor.putBoolean("isDarkModeOn", true);
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                editor.putBoolean("isDarkModeOn", false);
                 //Toast.makeText(MainActivity.this, "Dark_mode OFF", Toast.LENGTH_LONG).show();
             }
+            editor.apply();
         });
 
         return true;
@@ -135,15 +137,15 @@ public class MainActivity extends AppCompatActivity {
         Resources.Theme theme = this.getTheme();
         int backgroundColor = getResources().getColor(R.color.backgroundColor, theme);
         int textColor = getResources().getColor(R.color.textColor, theme);
+        int altTextColor = getResources().getColor(R.color.altTextColor, theme);
 
+        mainActivityView.setBackgroundColor(backgroundColor);
+        textView.setTextColor(textColor);
+        loadButton.setTextColor(altTextColor);
         if (state == DarkModeState.DAY) {
-            mainActivityView.setBackgroundColor(backgroundColor);
-            textView.setTextColor(textColor);
-            //loadButton.setBackground(textColor);
+            loadButton.setBackgroundResource(R.drawable.rounded_corner);
         } else {
-            mainActivityView.setBackgroundColor(backgroundColor);
-            textView.setTextColor(textColor);
-            //loadButton.setBackgroundColor(accentColor);
+            loadButton.setBackgroundResource(R.drawable.rounded_corner_night);
         }
     }
 
