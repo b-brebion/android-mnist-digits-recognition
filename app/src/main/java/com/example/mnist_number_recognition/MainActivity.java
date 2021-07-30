@@ -87,12 +87,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Adding and configuring the DarkMode switch button
         getMenuInflater().inflate(R.menu.action_menu, menu);
         MenuItem item = menu.findItem(R.id.AB_switch_item);
         item.setActionView(R.layout.action_bar_switch);
 
         final SwitchCompat sw = item.getActionView().findViewById(R.id.AB_switch_view);
 
+        // Retrieve isDarkModeOn information from the last session
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
         final boolean isDarkModeOn = sharedPreferences.getBoolean("isDarkModeOn", false);
@@ -106,12 +108,10 @@ public class MainActivity extends AppCompatActivity {
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                editor.putBoolean("isDarkModeOn", true);
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                editor.putBoolean("isDarkModeOn", false);
-                //Toast.makeText(MainActivity.this, "Dark_mode OFF", Toast.LENGTH_LONG).show();
             }
+            editor.putBoolean("isDarkModeOn", isChecked);
             editor.apply();
         });
 
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
+        // Changing app theme when the DarkMode button is used
         if (nightModeFlags == Configuration.UI_MODE_NIGHT_NO) {
             applyDayNight(DarkModeState.DAY);
         } else {
@@ -135,10 +136,12 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.textView);
         Button loadButton = findViewById(R.id.loadBtn);
         Resources.Theme theme = this.getTheme();
+
         int backgroundColor = getResources().getColor(R.color.backgroundColor, theme);
         int textColor = getResources().getColor(R.color.textColor, theme);
         int altTextColor = getResources().getColor(R.color.altTextColor, theme);
 
+        // Apply colors and drawable corresponding to the theme
         mainActivityView.setBackgroundColor(backgroundColor);
         textView.setTextColor(textColor);
         loadButton.setTextColor(altTextColor);
