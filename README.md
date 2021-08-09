@@ -2,7 +2,7 @@
 Android application that recognize MNIST Handwritten Digits. This is using a Convolutional Neural Network (CNN) model I made and trained with [PyTorch](https://pytorch.org/).  
 
 ## Download
-- You can clone this repo using the following command and then open the project in [Android Studio](https://developer.android.com/studio). You will then have the possibility to compile the app on your own Android device or on an emulator.
+- You can clone this repo using the following command and then open the project in [Android Studio](https://developer.android.com/studio). You will then have the possibility to compile the app and launch it on your own Android device or on an emulator.
 ```
 git clone https://github.com/BenoitBrebion/AndroidMNISTNumberRecognition.git
 ```
