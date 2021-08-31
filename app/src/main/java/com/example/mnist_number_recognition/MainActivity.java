@@ -1,21 +1,17 @@
 package com.example.mnist_number_recognition;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +28,7 @@ import java.io.OutputStream;
 import java.nio.FloatBuffer;
 
 public class MainActivity extends AppCompatActivity {
-    private enum DarkModeState {DAY, NIGHT}
+    private final String[] items = {"Light", "Dark", "Auto (Based on System)"};
 
     // 1-channel image to Tensor functions ----------------------------------------------------------------
     public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap) {
@@ -65,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        int mode = sharedPreferences.getInt("mode", 1);
+        AppCompatDelegate.setDefaultNightMode(mode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -87,69 +87,46 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Adding and configuring the DarkMode switch button
         getMenuInflater().inflate(R.menu.action_menu, menu);
-        MenuItem item = menu.findItem(R.id.AB_switch_item);
-        item.setActionView(R.layout.action_bar_switch);
-
-        final SwitchCompat sw = item.getActionView().findViewById(R.id.AB_switch_view);
-
-        // Retrieve isDarkModeOn information from the last session
-        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPreferences.edit();
-        final boolean isDarkModeOn = sharedPreferences.getBoolean("isDarkModeOn", false);
-        if (isDarkModeOn) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            sw.setChecked(true);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-        }
-
-        sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-            }
-            editor.putBoolean("isDarkModeOn", isChecked);
-            editor.apply();
-        });
-
         return true;
     }
 
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-        // Changing app theme when the DarkMode button is used
-        if (nightModeFlags == Configuration.UI_MODE_NIGHT_NO) {
-            applyDayNight(DarkModeState.DAY);
-        } else {
-            applyDayNight(DarkModeState.NIGHT);
-        }
+    private void setAppTheme(int mode, SharedPreferences.Editor editor) {
+        AppCompatDelegate.setDefaultNightMode(mode);
+        editor.putInt("mode", mode);
     }
 
-    private void applyDayNight(DarkModeState state) {
-        View mainActivityView = findViewById(R.id.main_activity);
-        TextView textView = findViewById(R.id.textView);
-        Button loadButton = findViewById(R.id.loadBtn);
-        Resources.Theme theme = this.getTheme();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_settings) {
+            SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+            final SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        int backgroundColor = getResources().getColor(R.color.backgroundColor, theme);
-        int textColor = getResources().getColor(R.color.textColor, theme);
-        int altTextColor = getResources().getColor(R.color.altTextColor, theme);
-
-        // Apply colors and drawable corresponding to the theme
-        mainActivityView.setBackgroundColor(backgroundColor);
-        textView.setTextColor(textColor);
-        loadButton.setTextColor(altTextColor);
-        if (state == DarkModeState.DAY) {
-            loadButton.setBackgroundResource(R.drawable.rounded_corner);
-        } else {
-            loadButton.setBackgroundResource(R.drawable.rounded_corner_night);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("Theme");
+            int checkedTheme = sharedPreferences.getInt("checkedTheme", 0);
+            builder.setSingleChoiceItems(items, checkedTheme, (dialogInterface, i) -> {
+                switch (i) {
+                    case 0:
+                        setAppTheme(AppCompatDelegate.MODE_NIGHT_NO, editor);
+                        break;
+                    case 1:
+                        setAppTheme(AppCompatDelegate.MODE_NIGHT_YES, editor);
+                        break;
+                    case 2:
+                        setAppTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, editor);
+                        break;
+                }
+                editor.putInt("checkedTheme", i);
+                editor.apply();
+                getDelegate().applyDayNight();
+            });
+            builder.setPositiveButton("Close", (dialogInterface, i) -> dialogInterface.dismiss());
+            builder.show();
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void loadNewImage(Module module) {

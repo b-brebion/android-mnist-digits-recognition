@@ -6,5 +6,5 @@
 
     <color name="backgroundColor">#212121</color>
     <color name="textColor">#ffffff</color>
-    <color name="altTextColor">#000000</color>
+    <color name="buttonTextColor">#000000</color>
 </resources>
