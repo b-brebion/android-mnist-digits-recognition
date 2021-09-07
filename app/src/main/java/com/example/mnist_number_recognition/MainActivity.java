@@ -195,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
             }
             editor.putInt("checkedTheme", i);
             editor.apply();
-            getDelegate().applyDayNight();
         });
         builder.setPositiveButton("Close", (dialogInterface, i) -> dialogInterface.dismiss());
         return builder.create();

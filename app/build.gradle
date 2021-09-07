@@ -23,7 +23,8 @@ android {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
+    jcenter() // see: https://github.com/facebookincubator/fbjni/issues/65
 }
 
 dependencies {
@@ -34,8 +35,9 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'org.pytorch:pytorch_android:1.4.0'
-    implementation 'org.pytorch:pytorch_android_torchvision:1.4.0'
+
+    implementation 'org.pytorch:pytorch_android:1.8.0'
+    implementation 'org.pytorch:pytorch_android_torchvision:1.8.0'
 
     // ViewModel
     def lifecycle_version = "2.4.0-alpha03"
