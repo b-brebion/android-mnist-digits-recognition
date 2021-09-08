@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.FloatBuffer;
+import java.security.SecureRandom;
 
 public class MainActivity extends AppCompatActivity {
     private final String[] items = {"Light", "Dark", "Auto (Based on System)"};
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private TextView textView;
     private AlertDialog dialog;
+    private final SecureRandom rand = new SecureRandom();
 
     // 1-channel image to Tensor functions ----------------------------------------------------------------
     public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap) {
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 module = Module.load(assetFilePath(this, "modelMNIST_ts.pt"));
                 mViewModel.setModule(module);
             } catch (IOException e) {
-                Log.e("MNIST NumberRecognition", "Error reading assets (module)", e);
+                Log.e("IOException", "Error reading assets (module)", e);
                 finish();
             }
         }
@@ -138,14 +140,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadNewImage(Module module) {
+        // Creating bitmap from img packaged into app android asset app/src/main/assets/img/img_?.jpg
         Bitmap bitmap = null;
-
         try {
-            // Creating bitmap from img packaged into app android asset app/src/main/assets/img/img_?.jpg
-            int randomInt = (int) (Math.random() * 350 + 1);
+            int randomInt = rand.nextInt(350) + 1;
             bitmap = BitmapFactory.decodeStream(getAssets().open("img/img_" + randomInt + ".jpg"));
         } catch (IOException e) {
-            Log.e("MNIST NumberRecognition", "Error reading assets (image)", e);
+            Log.e("IOException", "Error reading assets (image)", e);
             finish();
         }
 
@@ -153,7 +154,13 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageBitmap(bitmap);
 
         // Preparing input tensor
-        final Tensor inputTensor = bitmapToFloat32Tensor(bitmap);
+        Tensor inputTensor = null;
+        try {
+            inputTensor = bitmapToFloat32Tensor(bitmap);
+        } catch (Exception e) {
+            Log.e("Exception", "Error bitmapToFloat32Tensor()", e);
+            finish();
+        }
 
         // Running the model
         final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
@@ -191,6 +198,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 2:
                     setAppTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, editor);
+                    break;
+                default:
                     break;
             }
             editor.putInt("checkedTheme", i);
