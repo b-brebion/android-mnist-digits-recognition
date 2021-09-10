@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Applying the chosen theme when (re)starting the app
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         int mode = sharedPreferences.getInt("mode", 1);
         AppCompatDelegate.setDefaultNightMode(mode);
@@ -78,12 +79,13 @@ public class MainActivity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
 
+        // Retrieving or creating a ViewModel to allow data to survive configuration changes
         mViewModel = new ViewModelProvider(this).get(MyViewModel.class);
 
         Module module = mViewModel.getModule();
         if (module == null) {
             try {
-                // Loading serialized TorchScript module from packaged into app android asset app/src/model/assets/modelMNIST_ts.pt
+                // Loading serialized TorchScript module from file packaged into app Android asset (app/src/model/assets/modelMNIST_ts.pt)
                 module = Module.load(assetFilePath(this, "modelMNIST_ts.pt"));
                 mViewModel.setModule(module);
             } catch (IOException e) {
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         final Module finalModule = module;
         loadButton.setOnClickListener(v -> loadNewImage(finalModule));
 
+        // Attempting to restore the data contained in the ViewModel (if the theme of the app is changed)
         if (mViewModel.getImage() == null) {
             loadNewImage(finalModule);
         } else {
@@ -111,17 +114,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Adding the settings button in the top ActionBar
         getMenuInflater().inflate(R.menu.action_menu, menu);
         return true;
     }
 
     private void setAppTheme(int mode, SharedPreferences.Editor editor) {
+        // Setting the default night mode and saving it in the SharedPreferences
         AppCompatDelegate.setDefaultNightMode(mode);
         editor.putInt("mode", mode);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Displaying the AlertDialog when the settings button is clicked
         if (item.getItemId() == R.id.action_settings) {
             dialog.show();
             return true;
@@ -134,13 +140,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
+        // Saving the imageView, textView, and dialog state before the Activity is killed
         mViewModel.setImage(imageView.getDrawable());
         mViewModel.setText(textView.getText().toString());
         mViewModel.setDialogState(dialog.isShowing());
     }
 
     public void loadNewImage(Module module) {
-        // Creating bitmap from img packaged into app android asset app/src/main/assets/img/img_?.jpg
+        // Creating bitmap from img packaged into app Android asset (app/src/main/assets/img/img_?.jpg)
         Bitmap bitmap = null;
         try {
             int randomInt = rand.nextInt(350) + 1;
@@ -185,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        // Building the settings AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Theme");
         int checkedTheme = sharedPreferences.getInt("checkedTheme", 0);
