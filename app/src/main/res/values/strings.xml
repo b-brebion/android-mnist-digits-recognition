@@ -4,4 +4,6 @@
     <string name="load_new_img">Load a new image</string>
     <string name="recognition">Recognition</string>
     <string name="draw">Draw</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

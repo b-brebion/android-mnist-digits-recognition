@@ -16,6 +16,9 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.pytorch.IValue;
 import org.pytorch.Module;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private TextView textView;
     private AlertDialog dialog;
+    private NavigationBarView bottomNavigationView;
     private final SecureRandom rand = new SecureRandom();
 
     // 1-channel image to Tensor functions ----------------------------------------------------------------
@@ -76,8 +80,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
+         */
 
         // Retrieving or creating a ViewModel to allow data to survive configuration changes
         mViewModel = new ViewModelProvider(this).get(MyViewModel.class);
@@ -94,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /*
         Button loadButton = findViewById(R.id.loadBtn);
         final Module finalModule = module;
         loadButton.setOnClickListener(v -> loadNewImage(finalModule));
@@ -105,11 +112,27 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageDrawable(mViewModel.getImage());
             textView.setText(mViewModel.getText());
         }
+         */
 
         dialog = createSettingsDialog();
         if (mViewModel.getDialogState()) {
             dialog.show();
         }
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int buttonId = item.getItemId();
+            if (buttonId == R.id.recognition) {
+                RecognitionFragment recognitionFragment = new RecognitionFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, recognitionFragment).commit();
+                return true;
+            } else if (buttonId == R.id.draw) {
+                DrawFragment drawFragment = new DrawFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, drawFragment).commit();
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -141,9 +164,11 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
         // Saving the imageView, textView, and dialog state before the Activity is killed
+        /*
         mViewModel.setImage(imageView.getDrawable());
         mViewModel.setText(textView.getText().toString());
         mViewModel.setDialogState(dialog.isShowing());
+         */
     }
 
     public void loadNewImage(Module module) {
