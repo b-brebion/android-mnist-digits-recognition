@@ -7,4 +7,7 @@
     <color name="backgroundColor">#f0f0f0</color>
     <color name="textColor">#000000</color>
     <color name="buttonTextColor">#ffffff</color>
+
+    <color name="navBarUnselectedColor">#808080</color>
+    <color name="navBarSelectedColor">#ffffff</color>
 </resources>

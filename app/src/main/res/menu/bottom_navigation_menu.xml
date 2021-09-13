@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/page_1"
+        android:icon="@drawable/ic_recognition"
+        android:title="@string/recognition"/>
+    <item
+        android:id="@+id/page_2"
+        android:icon="@drawable/ic_draw"
+        android:title="@string/draw"/>
+</menu>
