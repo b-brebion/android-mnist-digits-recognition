@@ -1,5 +1,6 @@
 package com.example.mnist_number_recognition;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -7,68 +8,27 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationBarView;
 
-import org.pytorch.IValue;
 import org.pytorch.Module;
-import org.pytorch.Tensor;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.FloatBuffer;
-import java.security.SecureRandom;
 
 public class MainActivity extends AppCompatActivity {
     private final String[] items = {"Light", "Dark", "Auto (Based on System)"};
-    private MyViewModel mViewModel;
-    private ImageView imageView;
-    private TextView textView;
+    private SharedViewModel sharedViewModel;
     private AlertDialog dialog;
-    private NavigationBarView bottomNavigationView;
-    private final SecureRandom rand = new SecureRandom();
-
-    // 1-channel image to Tensor functions ----------------------------------------------------------------
-    public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap) {
-        return bitmapToFloat32Tensor(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
-    }
-
-    public static void bitmapToFloatBuffer(final Bitmap bitmap, final int x, final int y, final int width, final int height, final FloatBuffer outBuffer, final int outBufferOffset) {
-        checkOutBufferCapacityNoRgb(outBuffer, outBufferOffset, width, height);
-        final int pixelsCount = height * width;
-        final int[] pixels = new int[pixelsCount];
-        bitmap.getPixels(pixels, 0, width, x, y, width, height);
-        for (int i = 0; i < pixelsCount; i++) {
-            final int c = pixels[i];
-            outBuffer.put(((c) & 0xff) / 255.0f);
-        }
-    }
-
-    public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap, int x, int y, int width, int height) {
-        final FloatBuffer floatBuffer = Tensor.allocateFloatBuffer(width * height);
-        bitmapToFloatBuffer(bitmap, x, y, width, height, floatBuffer, 0);
-        return Tensor.fromBlob(floatBuffer, new long[]{1, 1, height, width});
-    }
-
-    private static void checkOutBufferCapacityNoRgb(FloatBuffer outBuffer, int outBufferOffset, int tensorWidth, int tensorHeight) {
-        if (outBufferOffset + tensorWidth * tensorHeight > outBuffer.capacity()) {
-            throw new IllegalStateException("Buffer underflow");
-        }
-    }
-    // ----------------------------------------------------------------------------------------------------
+    private RecognitionFragment recognitionFragment;
+    private DrawFragment drawFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,55 +40,50 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-        imageView = findViewById(R.id.imageView);
-        textView = findViewById(R.id.textView);
-         */
-
         // Retrieving or creating a ViewModel to allow data to survive configuration changes
-        mViewModel = new ViewModelProvider(this).get(MyViewModel.class);
+        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
 
-        Module module = mViewModel.getModule();
+        Module module = sharedViewModel.getModule();
         if (module == null) {
             try {
                 // Loading serialized TorchScript module from file packaged into app Android asset (app/src/model/assets/modelMNIST_ts.pt)
                 module = Module.load(assetFilePath(this, "modelMNIST_ts.pt"));
-                mViewModel.setModule(module);
+                sharedViewModel.setModule(module);
             } catch (IOException e) {
                 Log.e("IOException", "Error reading assets (module)", e);
                 finish();
             }
         }
 
-        /*
-        Button loadButton = findViewById(R.id.loadBtn);
-        final Module finalModule = module;
-        loadButton.setOnClickListener(v -> loadNewImage(finalModule));
-
-        // Attempting to restore the data contained in the ViewModel (if the theme of the app is changed)
-        if (mViewModel.getImage() == null) {
-            loadNewImage(finalModule);
-        } else {
-            imageView.setImageDrawable(mViewModel.getImage());
-            textView.setText(mViewModel.getText());
-        }
-         */
-
+        // Creating the settings AlertDialog and re-displaying it when the theme is changed
         dialog = createSettingsDialog();
-        if (mViewModel.getDialogState()) {
+        if (sharedViewModel.getDialogState()) {
             dialog.show();
         }
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Creating Fragments at first launch or retrieving them when changing theme
+        if (savedInstanceState == null) {
+            recognitionFragment = RecognitionFragment.newInstance();
+            drawFragment = DrawFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
+                    .add(R.id.fragmentContainerView, recognitionFragment, "RecognitionFragment")
+                    .add(R.id.fragmentContainerView, drawFragment, "DrawFragment")
+                    .hide(drawFragment)
+                    .commit();
+        } else {
+            recognitionFragment = (RecognitionFragment) getSupportFragmentManager().getFragment(savedInstanceState, "recognitionFragment");
+            drawFragment = (DrawFragment) getSupportFragmentManager().getFragment(savedInstanceState, "drawFragment");
+        }
+
+        // Configuring the NavigationBarView to display the proper Fragment
+        NavigationBarView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int buttonId = item.getItemId();
-            if (buttonId == R.id.recognition) {
-                RecognitionFragment recognitionFragment = new RecognitionFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, recognitionFragment).commit();
+            if (buttonId == R.id.recognition && drawFragment.isVisible()) {
+                getSupportFragmentManager().beginTransaction().show(recognitionFragment).hide(drawFragment).commit();
                 return true;
-            } else if (buttonId == R.id.draw) {
-                DrawFragment drawFragment = new DrawFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, drawFragment).commit();
+            } else if (buttonId == R.id.draw && recognitionFragment.isVisible()) {
+                getSupportFragmentManager().beginTransaction().show(drawFragment).hide(recognitionFragment).commit();
                 return true;
             }
             return false;
@@ -160,57 +115,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Saving both Fragments
+        getSupportFragmentManager().putFragment(outState, "recognitionFragment", recognitionFragment);
+        getSupportFragmentManager().putFragment(outState, "drawFragment", drawFragment);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        // Saving the imageView, textView, and dialog state before the Activity is killed
-        /*
-        mViewModel.setImage(imageView.getDrawable());
-        mViewModel.setText(textView.getText().toString());
-        mViewModel.setDialogState(dialog.isShowing());
-         */
-    }
-
-    public void loadNewImage(Module module) {
-        // Creating bitmap from img packaged into app Android asset (app/src/main/assets/img/img_?.jpg)
-        Bitmap bitmap = null;
-        try {
-            int randomInt = rand.nextInt(350) + 1;
-            bitmap = BitmapFactory.decodeStream(getAssets().open("img/img_" + randomInt + ".jpg"));
-        } catch (IOException e) {
-            Log.e("IOException", "Error reading assets (image)", e);
-            finish();
-        }
-
-        // Showing image on UI
-        imageView.setImageBitmap(bitmap);
-
-        // Preparing input tensor
-        Tensor inputTensor = null;
-        try {
-            inputTensor = bitmapToFloat32Tensor(bitmap);
-        } catch (Exception e) {
-            Log.e("Exception", "Error bitmapToFloat32Tensor()", e);
-            finish();
-        }
-
-        // Running the model
-        final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
-
-        // Getting tensor content as Java array of floats
-        final float[] scores = outputTensor.getDataAsFloatArray();
-
-        // Searching for the index with maximum score
-        float maxScore = -Float.MAX_VALUE;
-        int maxScoreIdx = -1;
-        for (int i = 0; i < scores.length; i++) {
-            if (scores[i] > maxScore) {
-                maxScore = scores[i];
-                maxScoreIdx = i;
-            }
-        }
-        String result = "Recognised number: " + maxScoreIdx;
-        textView.setText(result);
+        // Saving the dialog state before the Activity is killed
+        sharedViewModel.setDialogState(dialog.isShowing());
+        dialog.dismiss();
     }
 
     public AlertDialog createSettingsDialog() {

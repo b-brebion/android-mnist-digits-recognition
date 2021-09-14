@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import org.pytorch.Module;
 
-public class MyViewModel extends ViewModel {
+public class SharedViewModel extends ViewModel {
     private Module module;
     private Drawable image;
     private String text;
