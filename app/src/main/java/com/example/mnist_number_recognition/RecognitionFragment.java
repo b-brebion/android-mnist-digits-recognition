@@ -1,5 +1,6 @@
 package com.example.mnist_number_recognition;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ public class RecognitionFragment extends Fragment {
     private TextView textView;
     private final SecureRandom rand = new SecureRandom();
 
+    private UtilsFunctions utilsFunctions;
+
     public RecognitionFragment() {
         // Required empty public constructor
     }
@@ -37,6 +40,16 @@ public class RecognitionFragment extends Fragment {
     public static RecognitionFragment newInstance() {
         RecognitionFragment recognitionFragment = new RecognitionFragment();
         return recognitionFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            utilsFunctions = (UtilsFunctions) context;
+        } catch (ClassCastException castException) {
+            /** The activity does not implement the listener. */
+        }
     }
 
     @Override
@@ -52,18 +65,15 @@ public class RecognitionFragment extends Fragment {
         // Retrieving or creating a ViewModel to allow data to survive configuration changes
         sharedViewModel = new ViewModelProvider(getActivity()).get(SharedViewModel.class);
 
-        Module module = sharedViewModel.getModule();
-
         imageView = getView().findViewById(R.id.imageView);
         textView = getView().findViewById(R.id.textView);
 
         Button loadButton = getView().findViewById(R.id.loadBtn);
-        final Module finalModule = module;
-        loadButton.setOnClickListener(v -> loadNewImage(finalModule));
+        loadButton.setOnClickListener(v -> loadNewImage());
 
         // Attempting to restore the data contained in the ViewModel (if the theme of the app is changed)
         if (sharedViewModel.getImage() == null) {
-            loadNewImage(finalModule);
+            loadNewImage();
         } else {
             imageView.setImageDrawable(sharedViewModel.getImage());
             textView.setText(sharedViewModel.getText());
@@ -79,36 +89,7 @@ public class RecognitionFragment extends Fragment {
         sharedViewModel.setText(textView.getText().toString());
     }
 
-    // 1-channel image to Tensor functions ----------------------------------------------------------------
-    public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap) {
-        return bitmapToFloat32Tensor(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
-    }
-
-    public static void bitmapToFloatBuffer(final Bitmap bitmap, final int x, final int y, final int width, final int height, final FloatBuffer outBuffer, final int outBufferOffset) {
-        checkOutBufferCapacityNoRgb(outBuffer, outBufferOffset, width, height);
-        final int pixelsCount = height * width;
-        final int[] pixels = new int[pixelsCount];
-        bitmap.getPixels(pixels, 0, width, x, y, width, height);
-        for (int i = 0; i < pixelsCount; i++) {
-            final int c = pixels[i];
-            outBuffer.put(((c) & 0xff) / 255.0f);
-        }
-    }
-
-    public static Tensor bitmapToFloat32Tensor(final Bitmap bitmap, int x, int y, int width, int height) {
-        final FloatBuffer floatBuffer = Tensor.allocateFloatBuffer(width * height);
-        bitmapToFloatBuffer(bitmap, x, y, width, height, floatBuffer, 0);
-        return Tensor.fromBlob(floatBuffer, new long[]{1, 1, height, width});
-    }
-
-    private static void checkOutBufferCapacityNoRgb(FloatBuffer outBuffer, int outBufferOffset, int tensorWidth, int tensorHeight) {
-        if (outBufferOffset + tensorWidth * tensorHeight > outBuffer.capacity()) {
-            throw new IllegalStateException("Buffer underflow");
-        }
-    }
-    // ----------------------------------------------------------------------------------------------------
-
-    public void loadNewImage(Module module) {
+    public void loadNewImage() {
         // Creating bitmap from img packaged into app Android asset (app/src/main/assets/img/img_?.jpg)
         Bitmap bitmap = null;
         try {
@@ -122,31 +103,7 @@ public class RecognitionFragment extends Fragment {
         // Showing image on UI
         imageView.setImageBitmap(bitmap);
 
-        // Preparing input tensor
-        Tensor inputTensor = null;
-        try {
-            inputTensor = bitmapToFloat32Tensor(bitmap);
-        } catch (Exception e) {
-            Log.e("Exception", "Error bitmapToFloat32Tensor()", e);
-            getActivity().finish();
-        }
-
-        // Running the model
-        final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
-
-        // Getting tensor content as Java array of floats
-        final float[] scores = outputTensor.getDataAsFloatArray();
-
-        // Searching for the index with maximum score
-        float maxScore = -Float.MAX_VALUE;
-        int maxScoreIdx = -1;
-        for (int i = 0; i < scores.length; i++) {
-            if (scores[i] > maxScore) {
-                maxScore = scores[i];
-                maxScoreIdx = i;
-            }
-        }
-        String result = "Recognised number: " + maxScoreIdx;
+        String result = utilsFunctions.digitRecognition(bitmap);
         textView.setText(result);
     }
 }

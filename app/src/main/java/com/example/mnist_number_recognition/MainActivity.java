@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,17 +16,21 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationBarView;
 
+import org.pytorch.IValue;
 import org.pytorch.Module;
+import org.pytorch.Tensor;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.FloatBuffer;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements UtilsFunctions {
     private final String[] items = {"Light", "Dark", "Auto (Based on System)"};
     private SharedViewModel sharedViewModel;
+    private Module module;
     private AlertDialog dialog;
     private RecognitionFragment recognitionFragment;
     private DrawFragment drawFragment;
@@ -43,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         // Retrieving or creating a ViewModel to allow data to survive configuration changes
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
 
-        Module module = sharedViewModel.getModule();
+        module = sharedViewModel.getModule();
         if (module == null) {
             try {
                 // Loading serialized TorchScript module from file packaged into app Android asset (app/src/model/assets/modelMNIST_ts.pt)
@@ -130,6 +135,36 @@ public class MainActivity extends AppCompatActivity {
         // Saving the dialog state before the Activity is killed
         sharedViewModel.setDialogState(dialog.isShowing());
         dialog.dismiss();
+    }
+
+    @Override
+    public String digitRecognition(Bitmap bitmap) {
+        // Preparing input tensor
+        Tensor inputTensor = null;
+        try {
+            inputTensor = UtilsFunctions.bitmapToFloat32Tensor(bitmap);
+        } catch (Exception e) {
+            Log.e("Exception", "Error bitmapToFloat32Tensor()", e);
+            finish();
+        }
+
+        // Running the model
+        final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
+
+        // Getting tensor content as Java array of floats
+        final float[] scores = outputTensor.getDataAsFloatArray();
+
+        // Searching for the index with maximum score
+        float maxScore = -Float.MAX_VALUE;
+        int maxScoreIdx = -1;
+        for (int i = 0; i < scores.length; i++) {
+            if (scores[i] > maxScore) {
+                maxScore = scores[i];
+                maxScoreIdx = i;
+            }
+        }
+
+        return "Recognised number: " + maxScoreIdx;
     }
 
     public AlertDialog createSettingsDialog() {

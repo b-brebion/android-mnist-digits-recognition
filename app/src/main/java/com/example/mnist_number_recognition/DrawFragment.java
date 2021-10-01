@@ -1,5 +1,7 @@
 package com.example.mnist_number_recognition;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,10 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.pytorch.Module;
-
 public class DrawFragment extends Fragment {
     private DrawView drawView;
+    private TextView textView;
+
+    private UtilsFunctions utilsFunctions;
 
     public DrawFragment() {
         // Required empty public constructor
@@ -30,6 +33,16 @@ public class DrawFragment extends Fragment {
         fragmentDemo.setArguments(args);
          */
         return drawFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            utilsFunctions = (UtilsFunctions) context;
+        } catch (ClassCastException castException) {
+            /** The activity does not implement the listener. */
+        }
     }
 
     /*
@@ -54,10 +67,15 @@ public class DrawFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         drawView = getView().findViewById(R.id.drawView);
+        textView = getView().findViewById(R.id.textView);
         Button eraseButton = getView().findViewById(R.id.eraseBtn);
         Button saveButton = getView().findViewById(R.id.saveBtn);
 
         eraseButton.setOnClickListener(v -> drawView.erase());
-        saveButton.setOnClickListener(v -> drawView.save());
+        saveButton.setOnClickListener(v -> {
+            Bitmap scaledBitmap = drawView.save();
+            String result = utilsFunctions.digitRecognition(scaledBitmap);
+            textView.setText(result);
+        });
     }
 }
