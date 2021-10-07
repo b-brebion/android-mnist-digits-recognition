@@ -1,4 +1,4 @@
-package com.example.mnist_number_recognition;
+package com.example.mnist_digits_recognition;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,12 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.pytorch.IValue;
-import org.pytorch.Module;
-import org.pytorch.Tensor;
-
 import java.io.IOException;
-import java.nio.FloatBuffer;
 import java.security.SecureRandom;
 
 public class RecognitionFragment extends Fragment {

@@ -1,2 +1,2 @@
-rootProject.name='MNISTNumberRecognition'
+rootProject.name='MNIST Digits Recognition'
 include ':app'

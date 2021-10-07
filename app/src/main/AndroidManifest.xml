@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mnist_number_recognition">
+    package="com.example.mnist_digits_recognition">
 
     <application
         android:allowBackup="true"

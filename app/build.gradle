@@ -5,7 +5,7 @@ android {
     buildToolsVersion '30.0.2'
 
     defaultConfig {
-        applicationId "com.example.mnist_number_recognition"
+        applicationId "com.example.mnist_digits_recognition"
         minSdkVersion 23
         targetSdkVersion 31
         versionCode 4

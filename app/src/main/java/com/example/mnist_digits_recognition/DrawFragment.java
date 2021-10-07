@@ -1,22 +1,26 @@
-package com.example.mnist_number_recognition;
+package com.example.mnist_digits_recognition;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Arrays;
+
 public class DrawFragment extends Fragment {
     private DrawView drawView;
-    private TextView textView;
+    private TextView textView, textView2;
 
     private UtilsFunctions utilsFunctions;
 
@@ -62,20 +66,27 @@ public class DrawFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_draw, container, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         drawView = getView().findViewById(R.id.drawView);
         textView = getView().findViewById(R.id.textView);
+        textView2 = getView().findViewById(R.id.textView2);
         Button eraseButton = getView().findViewById(R.id.eraseBtn);
-        Button saveButton = getView().findViewById(R.id.saveBtn);
+
+        drawView.setOnTouchListener((view1, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                Bitmap scaledBitmap = drawView.save();
+                String result = utilsFunctions.digitRecognition(scaledBitmap);
+                textView.setText(result);
+                textView2.setText(Arrays.toString(utilsFunctions.getTempScores()));
+                return true;
+            }
+            return false;
+        });
 
         eraseButton.setOnClickListener(v -> drawView.erase());
-        saveButton.setOnClickListener(v -> {
-            Bitmap scaledBitmap = drawView.save();
-            String result = utilsFunctions.digitRecognition(scaledBitmap);
-            textView.setText(result);
-        });
     }
 }

@@ -1,4 +1,4 @@
-package com.example.mnist_number_recognition;
+package com.example.mnist_digits_recognition;
 
 import android.graphics.Bitmap;
 
@@ -37,4 +37,5 @@ public interface UtilsFunctions {
     // ----------------------------------------------------------------------------------------------------
 
     String digitRecognition(Bitmap bitmap);
+    float[] getTempScores();
 }

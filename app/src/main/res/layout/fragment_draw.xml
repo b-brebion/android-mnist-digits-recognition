@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.example.mnist_number_recognition.DrawView
+    <com.example.mnist_digits_recognition.DrawView
         android:id="@+id/drawView"
         android:layout_width="200dp"
         android:layout_height="200dp"
@@ -24,7 +23,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif"
         android:text="Recognised number: ?"
         android:textColor="@color/textColor"
@@ -38,30 +37,25 @@
         android:id="@+id/eraseBtn"
         android:layout_width="230dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/rounded_corner"
-        android:foreground="@drawable/ripple_effect"
-        android:text="Erase"
-        android:textColor="@color/buttonTextColor"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/saveBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/saveBtn"
-        android:layout_width="230dp"
-        android:layout_height="48dp"
         android:layout_marginBottom="40dp"
         android:background="@drawable/rounded_corner"
         android:foreground="@drawable/ripple_effect"
-        android:text="Save as Bitmap"
+        android:text="Erase"
         android:textColor="@color/buttonTextColor"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

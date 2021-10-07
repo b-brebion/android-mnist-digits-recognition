@@ -1,4 +1,4 @@
-package com.example.mnist_number_recognition;
+package com.example.mnist_digits_recognition;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -38,7 +38,6 @@ public class DrawView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (eraseStatus) {
-            Log.e("ERREURS", "path.reset();");
             path.reset();
             eraseStatus = false;
         }

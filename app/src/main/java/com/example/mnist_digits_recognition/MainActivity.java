@@ -1,4 +1,4 @@
-package com.example.mnist_number_recognition;
+package com.example.mnist_digits_recognition;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -25,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.FloatBuffer;
 
 public class MainActivity extends AppCompatActivity implements UtilsFunctions {
     private final String[] items = {"Light", "Dark", "Auto (Based on System)"};
@@ -34,6 +33,12 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
     private AlertDialog dialog;
     private RecognitionFragment recognitionFragment;
     private DrawFragment drawFragment;
+
+    private float[] tempScores;
+
+    public float[] getTempScores() {
+        return tempScores;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
 
         // Getting tensor content as Java array of floats
         final float[] scores = outputTensor.getDataAsFloatArray();
+        tempScores = scores;
 
         // Searching for the index with maximum score
         float maxScore = -Float.MAX_VALUE;
