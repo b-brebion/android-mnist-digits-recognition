@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationBarView;
 
 import org.pytorch.IValue;
+import org.pytorch.LiteModuleLoader;
 import org.pytorch.Module;
 import org.pytorch.Tensor;
 
@@ -34,12 +35,6 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
     private RecognitionFragment recognitionFragment;
     private DrawFragment drawFragment;
 
-    private float[] tempScores;
-
-    public float[] getTempScores() {
-        return tempScores;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Applying the chosen theme when (re)starting the app
@@ -56,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
         module = sharedViewModel.getModule();
         if (module == null) {
             try {
-                // Loading serialized TorchScript module from file packaged into app Android asset (app/src/model/assets/modelMNIST_ts.pt)
-                module = Module.load(assetFilePath(this, "modelMNIST_ts.pt"));
+                // Loading serialized TorchScript module from file packaged into app Android asset (app/src/model/assets/modelMNIST_ts_lite.ptl)
+                module = LiteModuleLoader.load(assetFilePath(this, "modelMNIST_ts_lite.ptl"));
                 sharedViewModel.setModule(module);
             } catch (IOException e) {
                 Log.e("IOException", "Error reading assets (module)", e);
@@ -158,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
 
         // Getting tensor content as Java array of floats
         final float[] scores = outputTensor.getDataAsFloatArray();
-        tempScores = scores;
 
         // Searching for the index with maximum score
         float maxScore = -Float.MAX_VALUE;
@@ -170,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
             }
         }
 
-        return "Recognised number: " + maxScoreIdx;
+        return "Recognised Digit: " + maxScoreIdx;
     }
 
     public AlertDialog createSettingsDialog() {

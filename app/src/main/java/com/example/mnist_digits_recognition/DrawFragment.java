@@ -7,8 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,11 +16,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.Arrays;
-
 public class DrawFragment extends Fragment {
+    private SharedViewModel sharedViewModel;
     private DrawView drawView;
-    private TextView textView, textView2;
+    private TextView textView;
 
     private UtilsFunctions utilsFunctions;
 
@@ -28,37 +27,19 @@ public class DrawFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static DrawFragment newInstance(/*int someInt, String someTitle*/) {
-        DrawFragment drawFragment = new DrawFragment();
-        /*
-        Bundle args = new Bundle();
-        args.putInt("someInt", someInt);
-        args.putString("someTitle", someTitle);
-        fragmentDemo.setArguments(args);
-         */
-        return drawFragment;
+    public static DrawFragment newInstance() {
+        return new DrawFragment();
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
             utilsFunctions = (UtilsFunctions) context;
-        } catch (ClassCastException castException) {
-            /** The activity does not implement the listener. */
+        } catch (ClassCastException ignored) {
+            // Ignored exception
         }
     }
-
-    /*
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Get back arguments
-        int SomeInt = getArguments().getInt("someInt", 0);
-        String someTitle = getArguments().getString("someTitle", "");
-    }
-     */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,22 +52,45 @@ public class DrawFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        drawView = getView().findViewById(R.id.drawView);
-        textView = getView().findViewById(R.id.textView);
-        textView2 = getView().findViewById(R.id.textView2);
-        Button eraseButton = getView().findViewById(R.id.eraseBtn);
+        // Retrieving or creating a ViewModel to allow data to survive configuration changes
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        drawView = requireView().findViewById(R.id.drawView);
+        textView = requireView().findViewById(R.id.textView);
+        Button eraseButton = requireView().findViewById(R.id.eraseBtn);
 
         drawView.setOnTouchListener((view1, motionEvent) -> {
+            // Recognising the digit on the drawing when the user lifts his finger from the screen
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 Bitmap scaledBitmap = drawView.save();
                 String result = utilsFunctions.digitRecognition(scaledBitmap);
                 textView.setText(result);
-                textView2.setText(Arrays.toString(utilsFunctions.getTempScores()));
+                // Indicating that the touch has been consumed
                 return true;
             }
+            // Indicating that the touch is yet to be consumed
             return false;
         });
 
-        eraseButton.setOnClickListener(v -> drawView.erase());
+        eraseButton.setOnClickListener(v -> {
+            // Erasing the drawing
+            drawView.erase();
+            textView.setText(R.string.unknown_digit);
+        });
+
+        // Attempting to restore the data contained in the ViewModel (if the theme of the app is changed)
+        if (sharedViewModel.getDrawText() != null) {
+            textView.setText(sharedViewModel.getDrawText());
+            drawView.setPath(sharedViewModel.getDrawPath());
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Saving textView and path before the Activity is killed
+        sharedViewModel.setDrawText(textView.getText().toString());
+        sharedViewModel.setDrawPath(drawView.getPath());
     }
 }

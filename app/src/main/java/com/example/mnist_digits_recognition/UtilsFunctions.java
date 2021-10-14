@@ -37,5 +37,4 @@ public interface UtilsFunctions {
     // ----------------------------------------------------------------------------------------------------
 
     String digitRecognition(Bitmap bitmap);
-    float[] getTempScores();
 }

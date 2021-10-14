@@ -8,19 +8,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
 public class DrawView extends View {
-    // Defines paint and canvas
     private Paint drawPaint;
-    // Stores next circle
-    private final Path path = new Path();
-
+    private Path path = new Path();
     private boolean eraseStatus = false;
 
     public DrawView(Context context) {
@@ -34,42 +27,52 @@ public class DrawView extends View {
         setupPaint();
     }
 
-    // Draws the path created during the touch events
+    public Path getPath() {
+        return path;
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (eraseStatus) {
+            // Erasing the drawing
             path.reset();
             eraseStatus = false;
         }
+        // Drawing the path on the canvas
         canvas.drawPath(path, drawPaint);
     }
 
-    // Append new circle each time user presses on screen
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float pointX = event.getX();
         float pointY = event.getY();
-        // Checks for the event that occurs
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                // Starts a new line in the path
+                // Starting a new line in the path
                 path.moveTo(pointX, pointY);
                 break;
             case MotionEvent.ACTION_MOVE:
-                // Draws line between last point and this point
+                // Drawing a line between last point and this point
                 path.lineTo(pointX, pointY);
                 break;
             default:
                 return false;
         }
 
-        invalidate(); // Indicate view should be redrawn
-        return true; // Indicate we've consumed the touch
+        // Informing that the view should be redrawn (onDraw())
+        invalidate();
+        // Indicating that the touch has been consumed
+        return true;
     }
 
-    // Setup paint with color and stroke styles
     private void setupPaint() {
+        // Setting up paint
         drawPaint = new Paint();
         drawPaint.setColor(Color.WHITE);
         drawPaint.setAntiAlias(true);
@@ -81,23 +84,17 @@ public class DrawView extends View {
 
     public void erase() {
         eraseStatus = true;
+        // Informing that the view should be redrawn (onDraw())
         invalidate();
     }
 
     public Bitmap save() {
+        // Saving the drawing as a 28x28 scaled Bitmap
         Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas myCanvas = new Canvas(bitmap);
         myCanvas.drawColor(Color.BLACK);
         myCanvas.drawPath(path, drawPaint);
 
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 28, 28, true);
-        File file = new File(getContext().getFilesDir() + "/test.png");
-        try {
-            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(file));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return scaledBitmap;
+        return Bitmap.createScaledBitmap(bitmap, 28, 28, true);
     }
 }

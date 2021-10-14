@@ -1,5 +1,6 @@
 package com.example.mnist_digits_recognition;
 
+import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 
 import androidx.lifecycle.ViewModel;
@@ -7,10 +8,17 @@ import androidx.lifecycle.ViewModel;
 import org.pytorch.Module;
 
 public class SharedViewModel extends ViewModel {
+    // App
     private Module module;
-    private Drawable image;
-    private String text;
     private boolean dialogState;
+
+    // Recognition Fragment
+    private Drawable recognitionImage;
+    private String recognitionText;
+
+    // Draw Fragment
+    private String drawText;
+    private Path drawPath;
 
     public Module getModule() {
         return module;
@@ -20,27 +28,43 @@ public class SharedViewModel extends ViewModel {
         this.module = module;
     }
 
-    public Drawable getImage() {
-        return image;
-    }
-
-    public void setImage(Drawable image) {
-        this.image = image;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
     public boolean getDialogState() {
         return dialogState;
     }
 
     public void setDialogState(boolean dialogState) {
         this.dialogState = dialogState;
+    }
+
+    public Drawable getRecognitionImage() {
+        return recognitionImage;
+    }
+
+    public void setRecognitionImage(Drawable recognitionImage) {
+        this.recognitionImage = recognitionImage;
+    }
+
+    public String getRecognitionText() {
+        return recognitionText;
+    }
+
+    public void setRecognitionText(String recognitionText) {
+        this.recognitionText = recognitionText;
+    }
+
+    public String getDrawText() {
+        return drawText;
+    }
+
+    public void setDrawText(String drawText) {
+        this.drawText = drawText;
+    }
+
+    public Path getDrawPath() {
+        return drawPath;
+    }
+
+    public void setDrawPath(Path drawPath) {
+        this.drawPath = drawPath;
     }
 }

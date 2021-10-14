@@ -5,4 +5,6 @@
     <string name="recognition">Recognition</string>
     <string name="draw">Draw</string>
     <string name="drawing_area">Drawing area</string>
+    <string name="unknown_digit">Recognised Digit: ?</string>
+    <string name="erase">Erase</string>
 </resources>

@@ -33,17 +33,16 @@ public class RecognitionFragment extends Fragment {
     }
 
     public static RecognitionFragment newInstance() {
-        RecognitionFragment recognitionFragment = new RecognitionFragment();
-        return recognitionFragment;
+        return new RecognitionFragment();
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
             utilsFunctions = (UtilsFunctions) context;
-        } catch (ClassCastException castException) {
-            /** The activity does not implement the listener. */
+        } catch (ClassCastException ignored) {
+            // Ignored exception
         }
     }
 
@@ -58,20 +57,20 @@ public class RecognitionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Retrieving or creating a ViewModel to allow data to survive configuration changes
-        sharedViewModel = new ViewModelProvider(getActivity()).get(SharedViewModel.class);
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
-        imageView = getView().findViewById(R.id.imageView);
-        textView = getView().findViewById(R.id.textView);
+        imageView = requireView().findViewById(R.id.imageView);
+        textView = requireView().findViewById(R.id.textView);
 
-        Button loadButton = getView().findViewById(R.id.loadBtn);
+        Button loadButton = requireView().findViewById(R.id.loadBtn);
         loadButton.setOnClickListener(v -> loadNewImage());
 
         // Attempting to restore the data contained in the ViewModel (if the theme of the app is changed)
-        if (sharedViewModel.getImage() == null) {
+        if (sharedViewModel.getRecognitionImage() == null) {
             loadNewImage();
         } else {
-            imageView.setImageDrawable(sharedViewModel.getImage());
-            textView.setText(sharedViewModel.getText());
+            imageView.setImageDrawable(sharedViewModel.getRecognitionImage());
+            textView.setText(sharedViewModel.getRecognitionText());
         }
     }
 
@@ -79,9 +78,9 @@ public class RecognitionFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        // Saving the imageView and textView before the Activity is killed
-        sharedViewModel.setImage(imageView.getDrawable());
-        sharedViewModel.setText(textView.getText().toString());
+        // Saving imageView and textView before the Activity is killed
+        sharedViewModel.setRecognitionImage(imageView.getDrawable());
+        sharedViewModel.setRecognitionText(textView.getText().toString());
     }
 
     public void loadNewImage() {
@@ -89,15 +88,16 @@ public class RecognitionFragment extends Fragment {
         Bitmap bitmap = null;
         try {
             int randomInt = rand.nextInt(350) + 1;
-            bitmap = BitmapFactory.decodeStream(getActivity().getAssets().open("img/img_" + randomInt + ".jpg"));
+            bitmap = BitmapFactory.decodeStream(requireActivity().getAssets().open("img/img_" + randomInt + ".jpg"));
         } catch (IOException e) {
             Log.e("IOException", "Error reading assets (image)", e);
-            getActivity().finish();
+            requireActivity().finish();
         }
 
         // Showing image on UI
         imageView.setImageBitmap(bitmap);
 
+        // Recognising the digit on the image
         String result = utilsFunctions.digitRecognition(bitmap);
         textView.setText(result);
     }
