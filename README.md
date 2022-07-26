@@ -1,10 +1,11 @@
 #  Android MNIST Digits Recognition
-Android application that recognize MNIST Handwritten Digits. This is using a Convolutional Neural Network (CNN) model I made and trained with [PyTorch](https://pytorch.org/).  
+Android application that recognise MNIST Handwritten Digits. This is using a Convolutional Neural Network (CNN) model I made and trained with [PyTorch](https://pytorch.org/).  
+This app allows you to recognise images of MNIST Handwritten Digits taken from the [official dataset](http://yann.lecun.com/exdb/mnist/) (but not used during model training). You can also draw your own digits and have them recognised by the model.
 
 ## Download
 - You can clone the latest release of this repo using the following command and then open the project in [Android Studio](https://developer.android.com/studio). You will then have the possibility to compile the app and launch it on your own Android device or on an emulator.
 ```
-git clone https://github.com/BenoitBrebion/android-mnist-digits-recognition.git -b v1.3.0
+git clone https://github.com/BenoitBrebion/android-mnist-digits-recognition.git -b v1.4.0
 ```
 
 - Or you can directly download the latest APK file available in the [Releases](https://github.com/BenoitBrebion/android-mnist-digits-recognition/releases) tab and run it on your Android device.
@@ -23,4 +24,7 @@ CNN(
 :white_check_mark: 99% overall accuracy (loss: 0.025208).
 
 ## Screenshots
-<img src="/images/example_3.jpg" alt="example_3" width="300"/> <img src="/images/example_5.jpg" alt="example_5" width="300"/>
+### Recognition
+<img src="/images/recognition_4.jpg" alt="recognition_4" width="300"/> <img src="/images/recognition_5_dark.jpg" alt="recognition_5_dark" width="300"/>
+### Draw
+<img src="/images/draw_3.jpg" alt="draw_3" width="300"/> <img src="/images/draw_7.jpg" alt="draw_7" width="300"/>
