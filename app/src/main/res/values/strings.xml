@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">MNIST Digits Recognition</string>
-    <string name="mnist_nb_img">MNIST Number Image</string>
-    <string name="load_new_img">Load a new image</string>
-    <string name="recognition">Recognition</string>
     <string name="draw">Draw</string>
     <string name="drawing_area">Drawing area</string>
-    <string name="unknown_digit">Recognised Digit: ?</string>
     <string name="erase">Erase</string>
+    <string name="load_new_img">Load a new image</string>
+    <string name="mnist_nb_img">MNIST Number Image</string>
+    <string name="recognition">Recognition</string>
+    <string name="settings_cd">Settings button</string>
+    <string name="unknown_digit">Recognised Digit: ?</string>
 </resources>
