@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
     <color name="colorPrimary">#2a2a2a</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#00838f</color>
+    <color name="colorPrimaryVariant">#000000</color>
+    <color name="colorOnPrimary">#ffffff</color>
+    <color name="colorSecondary">#00838f</color>
+    <color name="colorSurface">#2a2a2a</color>
 
     <color name="backgroundColor">#f0f0f0</color>
+    -->
+    <color name="imageBackgroundColor">#000000</color>
+    <!--
     <color name="textColor">#000000</color>
-    <color name="buttonTextColor">#ffffff</color>
 
     <color name="navBarUnselectedColor">#808080</color>
     <color name="navBarSelectedColor">#ffffff</color>
+    -->
 </resources>

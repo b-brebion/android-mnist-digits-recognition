@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 
 import org.pytorch.IValue;
@@ -172,8 +173,8 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
         final SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // Building the settings AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Theme");
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+        builder.setTitle("Select app theme");
         int checkedTheme = sharedPreferences.getInt("checkedTheme", 0);
         builder.setSingleChoiceItems(items, checkedTheme, (dialogInterface, i) -> {
             switch (i) {
