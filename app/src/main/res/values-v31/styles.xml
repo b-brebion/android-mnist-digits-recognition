@@ -1,7 +1,0 @@
-<resources>
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
-        <!-- Customize your theme here. -->
-        <item name="android:windowAnimationStyle">@style/WindowAnimationFadeInOut</item>
-        <!-- <item name="android:windowSplashScreenBackground">@color/colorPrimaryDark</item> -->
-    </style>
-</resources>

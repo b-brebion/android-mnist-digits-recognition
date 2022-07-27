@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         // Adding the settings button in the top ActionBar
         getMenuInflater().inflate(R.menu.action_menu, menu);
         return true;
