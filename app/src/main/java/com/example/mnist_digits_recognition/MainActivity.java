@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.material.color.DynamicColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.elevation.SurfaceColors;
 import com.google.android.material.navigation.NavigationBarView;
 
 import org.pytorch.IValue;
@@ -45,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Modifying Navigation Bar and Status Bar colors to match app colors
+        getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
+        getWindow().setStatusBarColor(SurfaceColors.SURFACE_2.getColor(this));
 
         // Retrieving or creating a ViewModel to allow data to survive configuration changes
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
