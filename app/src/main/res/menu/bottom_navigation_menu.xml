@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/recognition"
-        android:icon="@drawable/ic_recognition"
+        android:icon="@drawable/recognition_selector"
         android:title="@string/recognition"/>
     <item
         android:id="@+id/draw"
-        android:icon="@drawable/ic_draw"
+        android:icon="@drawable/draw_selector"
         android:title="@string/draw"/>
 </menu>
