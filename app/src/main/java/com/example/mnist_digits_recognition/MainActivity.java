@@ -11,10 +11,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.google.android.material.color.DynamicColors;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.elevation.SurfaceColors;
 import com.google.android.material.navigation.NavigationBarView;
@@ -48,9 +46,20 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Modifying Navigation Bar and Status Bar colors to match app colors
+        // Configuring the Top app bar
+        MaterialToolbar topAppBar = findViewById(R.id.top_app_bar);
+        topAppBar.setOnMenuItemClickListener(item -> {
+            // Displaying the AlertDialog when the settings button is clicked
+            if (item.getItemId() == R.id.action_settings) {
+                dialog.show();
+                return true;
+            }
+            return false;
+        });
+
+        // Modifying Status Bar and Navigation Bar colors to match app colors
+        getWindow().setStatusBarColor(SurfaceColors.SURFACE_0.getColor(this));
         getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
-        getWindow().setStatusBarColor(SurfaceColors.SURFACE_2.getColor(this));
 
         // Retrieving or creating a ViewModel to allow data to survive configuration changes
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
@@ -103,30 +112,6 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        // Adding the settings button in the top ActionBar
-        getMenuInflater().inflate(R.menu.action_menu, menu);
-        return true;
-    }
-
-    private void setAppTheme(int mode, SharedPreferences.Editor editor) {
-        // Setting the default night mode and saving it in the SharedPreferences
-        AppCompatDelegate.setDefaultNightMode(mode);
-        editor.putInt("mode", mode);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Displaying the AlertDialog when the settings button is clicked
-        if (item.getItemId() == R.id.action_settings) {
-            dialog.show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -172,6 +157,12 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
         }
 
         return "Recognised Digit: " + maxScoreIdx;
+    }
+
+    private void setAppTheme(int mode, SharedPreferences.Editor editor) {
+        // Setting the default night mode and saving it in the SharedPreferences
+        AppCompatDelegate.setDefaultNightMode(mode);
+        editor.putInt("mode", mode);
     }
 
     public AlertDialog createSettingsDialog() {
