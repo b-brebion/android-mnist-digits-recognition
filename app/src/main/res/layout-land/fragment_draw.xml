@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/border"
+        android:contentDescription="@string/drawing_area"
         app:layout_constraintBottom_toBottomOf="@id/guideline4"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="@id/guideline5"

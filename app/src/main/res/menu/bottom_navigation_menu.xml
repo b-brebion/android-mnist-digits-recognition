@@ -3,9 +3,9 @@
     <item
         android:id="@+id/recognition"
         android:icon="@drawable/recognition_selector"
-        android:title="@string/recognition"/>
+        android:title="@string/recognition" />
     <item
         android:id="@+id/draw"
         android:icon="@drawable/draw_selector"
-        android:title="@string/draw"/>
+        android:title="@string/draw" />
 </menu>
