@@ -31,7 +31,5 @@
         <item name="android:windowLightStatusBar">true</item>
 
         <item name="android:windowAnimationStyle">@style/WindowAnimationFadeInOut</item>
-
-        <!-- <item name="android:windowSplashScreenBackground">#ff0000</item> -->
     </style>
 </resources>

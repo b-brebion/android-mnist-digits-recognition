@@ -59,8 +59,4 @@
     <color name="md_theme_dark_shadow">#000000</color>
     <color name="md_theme_dark_surfaceTint">#4CDADB</color>
     <color name="md_theme_dark_surfaceTintColor">#4CDADB</color>
-
-    <color name="ic_launcher_background">#000000</color>
-
-    <color name="imageBackgroundColor">#000000</color>
 </resources>
