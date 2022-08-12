@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:contentDescription="@string/settings_cd"
         android:id="@+id/action_settings"
+        android:contentDescription="@string/settings_cd"
         android:icon="@drawable/ic_settings"
         android:title=""
         app:showAsAction="always" />
