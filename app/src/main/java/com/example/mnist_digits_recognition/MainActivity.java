@@ -23,10 +23,10 @@ import org.pytorch.Module;
 import org.pytorch.Tensor;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 
 public class MainActivity extends AppCompatActivity implements UtilsFunctions {
     private final String[] items = {"Light", "Dark", "Auto (Based on System)"};
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements UtilsFunctions {
         }
 
         try (InputStream is = context.getAssets().open(assetName)) {
-            try (OutputStream os = new FileOutputStream(file)) {
+            try (OutputStream os = Files.newOutputStream(file.toPath())) {
                 byte[] buffer = new byte[4 * 1024];
                 int read;
                 while ((read = is.read(buffer)) != -1) {

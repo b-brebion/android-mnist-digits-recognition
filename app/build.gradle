@@ -5,10 +5,10 @@ android {
 
     defaultConfig {
         applicationId "com.example.mnist_digits_recognition"
-        minSdkVersion 23
+        minSdk 26
         targetSdk 34
         versionCode 7
-        versionName '1.6.0'
+        versionName '1.5.1'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
