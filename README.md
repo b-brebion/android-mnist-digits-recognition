@@ -5,7 +5,7 @@ This app allows you to recognise images of MNIST Handwritten Digits taken from t
 ## Download
 - You can clone the latest release of this repo using the following command and then open the project in [Android Studio](https://developer.android.com/studio). You will then have the possibility to compile the app and launch it on your own Android device or on an emulator.
 ```
-git clone https://github.com/BenoitBrebion/android-mnist-digits-recognition.git -b v1.5.0
+git clone https://github.com/b-brebion/android-mnist-digits-recognition.git -b v1.5.1
 ```
 
 - Or you can directly download the latest APK file available in the [Releases](https://github.com/BenoitBrebion/android-mnist-digits-recognition/releases) tab and run it on your Android device.
@@ -21,7 +21,7 @@ CNN(
     (dropout): Dropout(p=0.25, inplace=False)  
 )
 ```
-:white_check_mark: 99% overall accuracy (loss: 0.025208).
+:white_check_mark: ~99% overall accuracy.
 
 ## Screenshots
 ### Recognition
