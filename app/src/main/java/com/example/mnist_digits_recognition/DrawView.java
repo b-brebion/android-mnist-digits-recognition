@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 public class DrawView extends View {
     private Paint drawPaint;
     private Path path = new Path();
@@ -36,7 +38,7 @@ public class DrawView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         if (eraseStatus) {
             // Erasing the drawing
             path.reset();

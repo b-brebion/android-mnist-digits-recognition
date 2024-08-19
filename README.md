@@ -5,7 +5,7 @@ This app allows you to recognise images of MNIST Handwritten Digits taken from t
 ## Download
 - You can clone the latest release of this repo using the following command and then open the project in [Android Studio](https://developer.android.com/studio). You will then have the possibility to compile the app and launch it on your own Android device or on an emulator.
 ```
-git clone https://github.com/b-brebion/android-mnist-digits-recognition.git -b v1.5.1
+git clone https://github.com/b-brebion/android-mnist-digits-recognition.git -b v1.5.2
 ```
 
 - Or you can directly download the latest APK file available in the [Releases](https://github.com/BenoitBrebion/android-mnist-digits-recognition/releases) tab and run it on your Android device.
@@ -25,9 +25,7 @@ CNN(
 
 ## Screenshots
 ### Recognition
-<img src="images/recognition.jpg" alt="recognition" width="300"/> <img src="images/recognition_dark.jpg" alt="recognition_dark" width="300"/>  
-<img src="images/recognition_landscape.jpg" alt="recognition_landscape" width="600"/>
+<img src="images/recognition.jpg" alt="recognition" width="300"/> <img src="images/recognition_dark.jpg" alt="recognition_dark" width="300"/>
 
 ### Draw
-<img src="images/draw.jpg" alt="draw" width="300"/> <img src="images/draw_dark.jpg" alt="draw_dark" width="300"/>  
-<img src="images/draw_dark_landscape.jpg" alt="draw_dark_landscape" width="600"/>
+<img src="images/draw.jpg" alt="draw" width="300"/> <img src="images/draw_dark.jpg" alt="draw_dark" width="300"/>
