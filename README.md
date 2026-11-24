@@ -1,16 +1,19 @@
-#  Android MNIST Digits Recognition
-Android application that recognise MNIST Handwritten Digits. This is using a Convolutional Neural Network (CNN) model I made and trained with [PyTorch](https://pytorch.org/).  
-This app allows you to recognise images of MNIST Handwritten Digits taken from the [official dataset](http://yann.lecun.com/exdb/mnist/) (but not used during model training). You can also draw your own digits and have them recognised by the model.
+# Android MNIST Digits Recognition
+
+This Android application allows you to use a ML model to recognise [MNIST handwritten digits](https://en.wikipedia.org/wiki/MNIST_database) taken from the official dataset (but not used during model training). You can also draw your own digits and have them recognised by the model!
+
+This is using a [Convolutional Neural Network (CNN)](https://en.wikipedia.org/wiki/Convolutional_neural_network) model I made and trained using [PyTorch](https://pytorch.org/).  
 
 ## Download
-- You can clone the latest release of this repo using the following command and then open the project in [Android Studio](https://developer.android.com/studio). You will then have the possibility to compile the app and launch it on your own Android device or on an emulator.
-```
-git clone https://github.com/b-brebion/android-mnist-digits-recognition.git -b v1.5.2
-```
 
-- Or you can directly download the latest APK file available in the [Releases](https://github.com/BenoitBrebion/android-mnist-digits-recognition/releases) tab and run it on your Android device.
+- You can directly download the latest APK file available in the [Releases](https://github.com/b-brebion/android-mnist-digits-recognition/releases) tab and run it on your Android device.
+- Or you can clone this repo using the command below, and then open the project in [Android Studio](https://developer.android.com/studio). You will then have the possibility to compile the app and launch it on your own Android device, or in an emulator.
+```
+git clone https://github.com/b-brebion/android-mnist-digits-recognition.git
+```
 
 ## Model
+
 ```
 CNN(  
     (conv1): Conv2d(1, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))  
